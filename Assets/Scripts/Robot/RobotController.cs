@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class RobotController : MonoBehaviour {
 
@@ -11,7 +10,7 @@ public class RobotController : MonoBehaviour {
 
 	private float mecPower, blinded;
 
-	private int i, j, foo;
+	private int i;
 
 	//private int[] sign = new int[2];
 
@@ -65,7 +64,7 @@ public class RobotController : MonoBehaviour {
 		if (robot) {
 			rb = robot.GetComponent<Rigidbody> ();
 			line = robot.GetComponent<LineRenderer> ();
-			line.SetVertexCount (GameObject.FindGameObjectsWithTag ("Litter").Length + 1);
+			line.positionCount = GameObject.FindGameObjectsWithTag("Litter").Length + 1;
 			// Puissance / tension pour le nombre de piles, fois 2 pour 2 batteries, fois la masse d'une pile, puis passage en kilogrammes
 			rb.mass = 2.8f + PlayerPrefs.GetFloat ("Tension", 6) * PlayerPrefs.GetFloat ("Intensity", 1) * 2 * 23 * Mathf.Pow(10, -2f) / 1.5f;
 		}
@@ -94,7 +93,8 @@ public class RobotController : MonoBehaviour {
 		}
 	}
 
-	/* Cette fonction est appelée à chaque fois qu'un objet est en contact (produit une collision) avec le robot
+	/** 
+	 * Cette fonction est appelée à chaque fois qu'un objet est en contact (produit une collision) avec le robot
 	 * Beaucoup de conditions imbriquées pour des raisons d'efficacité, dans l'ordre on va :
 	 * Vérifier qu'il y a contact
 	 * Que ce contact aie lieu avec le terrain, et que l'utilisateur presse une touche de direction
@@ -139,13 +139,15 @@ public class RobotController : MonoBehaviour {
 		}
 	}
 
+	/**
+	 * 
+	 * objecive : coordonnées de l'objectif
+	 * pos : coordonnées de notre robot
+	 * dir : orientation du robot
+	 * On travaille en 2 dimensions, pour plus de simplicité
+	 */
 	void autoMove(Vector3 objective, Vector3 pos, Vector3 dir) {
-		/*
-		 * objecive : coordonnées de l'objectif
-		 * pos : coordonnées de notre robot
-		 * dir : orientation du robot
-		 * On travaille en 2 dimensions, pour plus de simplicité
-		 */
+
 		Vector3 targetAxis = objective - pos;
 		// On vérifie la distance
 		if (Vector3.Distance (objective, pos) > 12f) {
@@ -169,7 +171,7 @@ public class RobotController : MonoBehaviour {
 
 		line.SetPosition (0, sound.transform.position);
 		// Le nombre de points est le nombre de déchets, plus un pour le robot et plus un pour la base
-		line.SetVertexCount (litters.Length + 2);
+		line.positionCount = litters.Length + 2;
 
 		// Le dernier point est la base
 		line.SetPosition (litters.Length + 1, hq.transform.position);
@@ -253,7 +255,9 @@ public class RobotController : MonoBehaviour {
 		}
 	}
 
-	// Fait avancer le robot
+	/**
+	 * Fait avancer le robot
+	 */
 	void motorsController(float power, float rotate) {
 		Vector3 direction = Vector3.ProjectOnPlane(centerCal.transform.position - backwardCal.transform.position, Vector3.up);
 		movingForce = power * direction;

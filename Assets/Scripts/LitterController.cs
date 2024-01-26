@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-//using System.Collections;
 
 public class LitterController : MonoBehaviour {
 
@@ -9,7 +8,7 @@ public class LitterController : MonoBehaviour {
 
 	public RobotController script;
 
-	private float dist, high, timer;
+	private float dist, timer;
 
 	// Use this for initialization
 	void Start () {
@@ -58,18 +57,18 @@ public class LitterController : MonoBehaviour {
 		}
 	}
 
+	/**
+	 * On fait léviter le déchet.
+	 */
 	void Fly () {
-		// On fait léviter le déchet, pour ne pas recommencer en permanance, on se souvient de l'instant
 		rb.useGravity = false;
 		rb.velocity = rb.angularVelocity = Vector3.zero;
 		transform.position = transform.position + Vector3.up;
 		Invoke ("Fall", 5f);
-		//Debug.Log ("Fly");
 	}
 
 	void Fall () {
 		rb.useGravity = true;
-		//Debug.Log ("Fall");
 		timer = Time.fixedTime + 2;
 	}
 }

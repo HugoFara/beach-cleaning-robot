@@ -9,8 +9,6 @@ public class LitterSwallower : MonoBehaviour {
 
 	public float angle;
 
-	private int i;
-
 	void Start () {
 		// On assigne des variables aux objets qui serviront, pour des raisons de performances
 		centerCal = GameObject.Find ( "Wall-E/Other" );
@@ -26,7 +24,9 @@ public class LitterSwallower : MonoBehaviour {
 		}
 	}
 
-	// Fonction qui fait tourner la pale
+	/**
+	 * Fonction qui fait tourner la pale
+	 */
 	public void rotate () {
 		// axis axe de rotation
 		Vector3 axis = rightCal.transform.position - centerCal.transform.position;

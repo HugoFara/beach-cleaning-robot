@@ -8,14 +8,16 @@ public class CameraController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		robot = GameObject.FindWithTag ("Player");
-		transform.position = new Vector3 (robot.transform.position.x, 150, robot.transform.position.z);
+		transform.position = new Vector3 (
+			robot.transform.position.x, 150, robot.transform.position.z
+		);
 	}
 	
 	// Cette fonction est appellée après chaque image
 	void LateUpdate () {
 		// Les coordonnées sont choisies pour que la caméra revienne sur le robot si celle-ci sort de l'écran
 		// Essayer de moderniser le calcul de distance, pour le rendre plus lisible
-		if ( Mathf.Sqrt(Mathf.Pow(transform.position.x, 2) + Mathf.Pow(robot.transform.position.x, 2) ) > 50) {
+		if (Mathf.Sqrt(Mathf.Pow(transform.position.x, 2) + Mathf.Pow(robot.transform.position.x, 2) ) > 50) {
 			transform.position += (robot.transform.position.x - transform.position.x) * Vector3.right / 175;
 		} 
 		if (Mathf.Sqrt(Mathf.Pow(transform.position.z, 2) + Mathf.Pow(robot.transform.position.z, 2) ) > 20 ) {
