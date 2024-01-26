@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
-//using System.Collections;
-/* La caméra doit suivre wall-E s'il tombe
+
+/*
+ * TODO: 
+ * 
+ * La caméra doit suivre wall-E s'il tombe
  * Ajouter des commentaires partout
  * Afficher "Wall-E nous a quitté" si chute
  * Modifier le terrain (ajouter la mer, le désert, la plage, la benne, des dunes)
@@ -21,10 +24,11 @@
  * Pour une roue normale sur du sable, b = 0.3
  * 0.5 MJ/kg
  */
-public class Layout : MonoBehaviour {
-	// Cette classe est utilisée pour placer les différents objets au bon endroit
 
-	//private GameObject robot; 
+/**
+ * Place les différents objets au bon endroit
+ */
+public class Layout : MonoBehaviour {
 
 	private GameObject main_camera, map;
 
@@ -37,11 +41,10 @@ public class Layout : MonoBehaviour {
 
 		// Reglage de la position de la caméra
 		main_camera = GameObject.Find ("Main Camera");
-		main_camera.transform.position = new Vector3 (0, 150, 0);
-		main_camera.transform.rotation = new Quaternion (90, 0, 0, 90);
-
-		//robot = GameObject.FindWithTag ("Player");
-		//robot.transform.position = new Vector3 (0, 10, 0);
+		main_camera.transform.SetPositionAndRotation(
+			new Vector3 (0, 150, 0), 
+			new Quaternion (90, 0, 0, 90)
+		);
 
 		// Reglage de la position du terrain, selon le nom de ce terrain
 		if ( GameObject.Find ("Terrain") ) {
@@ -49,7 +52,7 @@ public class Layout : MonoBehaviour {
 			map = GameObject.Find ("Terrain");
 			map.transform.position = new Vector3 (-20, 0, -20);
 
-		} else if ( GameObject.Find ("Plane") ){
+		} else if ( GameObject.Find ("Plane") ) {
 			
 			map = GameObject.Find ("Plane");
 			map.transform.position = Vector3.zero;

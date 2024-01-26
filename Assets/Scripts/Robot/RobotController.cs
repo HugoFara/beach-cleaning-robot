@@ -56,7 +56,7 @@ public class RobotController : MonoBehaviour {
 
 		hq = GameObject.Find ("Base");
 
-		InvokeRepeating ("litterCount", 0f, 3f);
+		InvokeRepeating (nameof(LitterCount), 0f, 3f);
 
 		// On règle la puissance electrique * 2 car on a deux boîtiers de pile
 		elecPower = PlayerPrefs.GetFloat ("Tension", 6) * PlayerPrefs.GetFloat ("Intensity", 1) * 2;
@@ -78,7 +78,7 @@ public class RobotController : MonoBehaviour {
 		// Puissance mécanique = puissance absorbée * rendement (en %)
 		mecPower = elecPower * perf * 0.01f;
 		rb.WakeUp ();
-		setLine ();
+		SetLine ();
 	}
 
 	void FixedUpdate () {
@@ -104,49 +104,52 @@ public class RobotController : MonoBehaviour {
 		if (collisionInfo.gameObject.CompareTag ("MainMap") ) {
 			if (auto.autoB) {
 				if (Time.fixedTime > blinded) {
-					autoMove (target.transform.position, sound.transform.position, centerCal.transform.position - backwardCal.transform.position);
+					AutoMove (target.transform.position, sound.transform.position, centerCal.transform.position - backwardCal.transform.position);
 				} else {
-					motorsController (mecPower, 0);
-					blade.rotate ();
+					MotorsController (mecPower, 0);
+					blade.Rotate ();
 				}
 			} else if (Input.GetAxis ("Horizontal") + Input.GetAxis ("Vertical") != 0) {
-				userMove ();
+				UserMove ();
 			}
 		}
 	}
 
-	void userMove() {
+	void UserMove() {
 
 		// Si l'utilisateur a appuyé sur flèche droite ou gauche
 		if (Input.GetAxis ("Horizontal") != 0) {
-			/* mecPower															: donne la norme
+			/* 
+			 * mecPower															: donne la norme
 			 * Mathf.Sign( Input.GetAxis ("Horizontal") )		 				: donne le sens
 			 * Direction et point d'application sont déjà connus (il s'agit des chenilles)
 			 */
 			if (rb.angularVelocity.magnitude < 1.2f) {
-				motorsController (mecPower, Mathf.Sign (Input.GetAxis ("Horizontal")));
+				MotorsController (mecPower, Mathf.Sign (Input.GetAxis ("Horizontal")));
 			}
 		}
 
 		// Si l'utilisateur a appuyé sur flèche haut ou bas
 		if (Input.GetAxis ("Vertical") != 0) {
-			/* backwardCal.transform.position - centerCal.transform.position 	: donne la direction
-				 * power 															: donne la norme
-				 * Mathf.Sign( Input.GetAxis ("Horizontal") ) et sign 				: donnent le sens
-				 * sign va donner le sens, soit en l'inversant soit en ne changeant rien
-				 */
-			motorsController (mecPower * Mathf.Sign (Input.GetAxis ("Vertical")), 0);
+			/* 
+			 * backwardCal.transform.position - centerCal.transform.position 	: donne la direction
+			 * power 															: donne la norme
+		     * Mathf.Sign( Input.GetAxis ("Horizontal") ) et sign 				: donnent le sens
+			 * sign va donner le sens, soit en l'inversant soit en ne changeant rien
+			 */
+			MotorsController (mecPower * Mathf.Sign (Input.GetAxis ("Vertical")), 0);
 		}
 	}
 
 	/**
+	 * Bouge le robot automatiquement.
 	 * 
-	 * objecive : coordonnées de l'objectif
+	 * objective : coordonnées de l'objectif
 	 * pos : coordonnées de notre robot
 	 * dir : orientation du robot
 	 * On travaille en 2 dimensions, pour plus de simplicité
 	 */
-	void autoMove(Vector3 objective, Vector3 pos, Vector3 dir) {
+	void AutoMove(Vector3 objective, Vector3 pos, Vector3 dir) {
 
 		Vector3 targetAxis = objective - pos;
 		// On vérifie la distance
@@ -154,10 +157,10 @@ public class RobotController : MonoBehaviour {
 			// On tourne d'abord, si nécessaire, par une projection orthogonale sur le plan x,z
 			if (Vector2.Angle (ProjectOnPlan2D(dir), ProjectOnPlan2D(targetAxis)) > 2f) {
 				if (rb.angularVelocity.magnitude < 2f) {
-					motorsController (mecPower, Mathf.Sign (Vector3.Cross(dir, targetAxis).y));
+					MotorsController (mecPower, Mathf.Sign (Vector3.Cross(dir, targetAxis).y));
 				}
 			} else {
-				motorsController (mecPower, 0);
+				MotorsController (mecPower, 0);
 			}
 		} else {
 			/* La distance robot-déchet est très petite, on va alors passer en pilotage en aveugle.
@@ -167,7 +170,7 @@ public class RobotController : MonoBehaviour {
 
 	}
 
-	void setLine() {
+	void SetLine() {
 
 		line.SetPosition (0, sound.transform.position);
 		// Le nombre de points est le nombre de déchets, plus un pour le robot et plus un pour la base
@@ -177,12 +180,12 @@ public class RobotController : MonoBehaviour {
 		line.SetPosition (litters.Length + 1, hq.transform.position);
 		
 		if (litters.Length == 0) {
-			autoMove (hq.transform.position, sound.transform.position, centerCal.transform.position - backwardCal.transform.position);
+			AutoMove (hq.transform.position, sound.transform.position, centerCal.transform.position - backwardCal.transform.position);
 			return;
 		}
 
 		int[] targIndex = new int[2];
-		targIndex [0] = closestIndex (robCenter.position, litters);
+		targIndex [0] = ClosestIndex (robCenter.position, litters);
 		// Le premier objectif est le déchet le plus proche du robot
 		target = litters [targIndex [0]];
 		line.SetPosition (1, target.transform.position);
@@ -258,7 +261,7 @@ public class RobotController : MonoBehaviour {
 	/**
 	 * Fait avancer le robot
 	 */
-	void motorsController(float power, float rotate) {
+	void MotorsController(float power, float rotate) {
 		Vector3 direction = Vector3.ProjectOnPlane(centerCal.transform.position - backwardCal.transform.position, Vector3.up);
 		movingForce = power * direction;
 		/* On va tracer des vecteurs force avec
@@ -303,8 +306,10 @@ public class RobotController : MonoBehaviour {
 		}
 	}
 
-	// Permet de retracer la ligne répétitivement
-	public void litterCount() {
+	/**
+	 * Permet de retracer la ligne répétitivement.
+	 */
+	public void LitterCount() {
 		litters = new GameObject[GameObject.FindGameObjectsWithTag ("Litter").Length];
 		litters = GameObject.FindGameObjectsWithTag ("Litter");
 		distant = new GameObject[litters.Length];
@@ -312,10 +317,12 @@ public class RobotController : MonoBehaviour {
 		infos.NLitters (litters.Length);
 	}
 
-	int closestIndex(Vector3 point, GameObject[] list) {
-		/* Parmi tous les objets de la liste "list",
-		 	on trouve le plus proche du point "point" */
-		int index = 0;
+	/**
+	 * Parmi tous les objets de la liste "list",
+	 * on trouve le plus proche du point "point"
+	 */
+	int ClosestIndex(Vector3 point, GameObject[] list) {
+	int index = 0;
 		float dist = Vector3.Distance (point, list [0].transform.position);
 		if (list.Length > 1) {
 			for (i = 1; i < list.Length; i++) {

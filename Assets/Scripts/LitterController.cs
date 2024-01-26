@@ -24,13 +24,13 @@ public class LitterController : MonoBehaviour {
 
 		if (transform.position.y < -250) {
 			tag = "Untagged";
-			script.litterCount ();
+			script.LitterCount ();
 			Destroy (gameObject);
 		}
 
 		if (rb.velocity.magnitude > 20 && tag == "Litter") {
 			tag = "Untagged";
-			script.litterCount ();
+			script.LitterCount ();
 		}
 
 		if (dist < 20) {
@@ -40,7 +40,7 @@ public class LitterController : MonoBehaviour {
 				rb.AddForce((robotPos.position - transform.position) * 3);
 				if (tag == "Litter") {
 					tag = "Untagged";
-					script.litterCount ();
+					script.LitterCount ();
 				}
 			} else if (timer < Time.fixedTime && !IsInvoking() && script.target == gameObject) {
 				Fly ();
@@ -48,7 +48,7 @@ public class LitterController : MonoBehaviour {
 		} else {
 			if (tag != "Litter" && rb.velocity.magnitude < 30) {
 				tag = "Litter";
-				script.litterCount ();
+				script.LitterCount ();
 			}
 			// On ralentit le déchet, puisqu'il est loin du robot, pas trop lent, pas trop rapide
 			if (rb.velocity.magnitude < 10 && rb.velocity.magnitude > 0.5f) {
@@ -64,7 +64,7 @@ public class LitterController : MonoBehaviour {
 		rb.useGravity = false;
 		rb.velocity = rb.angularVelocity = Vector3.zero;
 		transform.position = transform.position + Vector3.up;
-		Invoke ("Fall", 5f);
+		Invoke (nameof(Fall), 5f);
 	}
 
 	void Fall () {

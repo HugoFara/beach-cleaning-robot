@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-//using System.Collections;
 
 public class LitterSwallower : MonoBehaviour {
 
@@ -20,15 +19,15 @@ public class LitterSwallower : MonoBehaviour {
 	void Update () {
 		// Permet de faire tourner la pale à l'avant, manuellement
 		if (Input.GetKey (KeyCode.Space)) {
-			rotate ();
+			Rotate ();
 		}
 	}
 
 	/**
 	 * Fonction qui fait tourner la pale
 	 */
-	public void rotate () {
-		// axis axe de rotation
+	public void Rotate () {
+		/// axe de rotation
 		Vector3 axis = rightCal.transform.position - centerCal.transform.position;
 		transform.RotateAround (transform.position, axis, angle * Time.timeScale);
 		//collid.transform.RotateAround (collid.transform.position, axis, angle * Time.timeScale);
