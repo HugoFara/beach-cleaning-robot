@@ -104,7 +104,11 @@ public class RobotController : MonoBehaviour {
 		if (collisionInfo.gameObject.CompareTag ("MainMap") ) {
 			if (auto.autoB) {
 				if (Time.fixedTime > blinded) {
-					AutoMove (target.transform.position, sound.transform.position, centerCal.transform.position - backwardCal.transform.position);
+					AutoMove (
+						target.transform.position, 
+						sound.transform.position, 
+						centerCal.transform.position - backwardCal.transform.position
+					);
 				} else {
 					MotorsController (mecPower, 0);
 					blade.Rotate ();
@@ -173,14 +177,19 @@ public class RobotController : MonoBehaviour {
 	void SetLine() {
 
 		line.SetPosition (0, sound.transform.position);
-		// Le nombre de points est le nombre de déchets, plus un pour le robot et plus un pour la base
+		// Le nombre de points est le nombre de déchets,
+		// plus un pour le robot et plus un pour la base
 		line.positionCount = litters.Length + 2;
 
 		// Le dernier point est la base
 		line.SetPosition (litters.Length + 1, hq.transform.position);
 		
 		if (litters.Length == 0) {
-			AutoMove (hq.transform.position, sound.transform.position, centerCal.transform.position - backwardCal.transform.position);
+			AutoMove (
+				hq.transform.position, 
+				sound.transform.position, 
+				centerCal.transform.position - backwardCal.transform.position
+			);
 			return;
 		}
 
@@ -262,7 +271,10 @@ public class RobotController : MonoBehaviour {
 	 * Fait avancer le robot
 	 */
 	void MotorsController(float power, float rotate) {
-		Vector3 direction = Vector3.ProjectOnPlane(centerCal.transform.position - backwardCal.transform.position, Vector3.up);
+		Vector3 direction = Vector3.ProjectOnPlane(
+			centerCal.transform.position - backwardCal.transform.position, 
+			Vector3.up
+		);
 		movingForce = power * direction;
 		/* On va tracer des vecteurs force avec
 		 * direction 	: la direction de la force (norme de 1 m)
@@ -285,23 +297,55 @@ public class RobotController : MonoBehaviour {
 			// Si la vitesse est supérieur à 2/3 m/s : à 2/3 m/s, on a une force de 18 N (force maximale)
 			if (rb.velocity.magnitude * 3 > 2) {
 				// Force = puissance / vitesse
-				rb.AddForceAtPosition (movingForce / rb.velocity.magnitude, leftCat.transform.position + Vector3.up * 0.8f, ForceMode.Force);
-				rb.AddForceAtPosition (movingForce / rb.velocity.magnitude, rightCat.transform.position + Vector3.up * 0.8f, ForceMode.Force);
+				rb.AddForceAtPosition (
+					movingForce / rb.velocity.magnitude, 
+					leftCat.transform.position + Vector3.up * 0.8f, 
+					ForceMode.Force
+				);
+				rb.AddForceAtPosition (
+					movingForce / rb.velocity.magnitude, 
+					rightCat.transform.position + Vector3.up * 0.8f, 
+					ForceMode.Force
+				);
 			} else {
 				// Pour éviter de diviser par un nombre qui tend vers 0, on triche pour obtenir la force maximale
-				rb.AddForceAtPosition (movingForce * 3 / 2, leftCat.transform.position + Vector3.up * 0.8f, ForceMode.Force);
-				rb.AddForceAtPosition (movingForce * 3 / 2, rightCat.transform.position + Vector3.up * 0.8f, ForceMode.Force);
+				rb.AddForceAtPosition (
+					movingForce * 3 / 2, 
+					leftCat.transform.position + Vector3.up * 0.8f, 
+					ForceMode.Force
+				);
+				rb.AddForceAtPosition (
+					movingForce * 3 / 2, 
+					rightCat.transform.position + Vector3.up * 0.8f, 
+					ForceMode.Force
+				);
 			}
 		} else {
 			Debug.Log ("Rotation : " + rb.angularVelocity.magnitude);
 			// Vitesse angulaire nominale : 
 			if (rb.angularVelocity.magnitude < 0.8f && Mathf.FloorToInt (rb.angularVelocity.magnitude * 100) != 0) {
 				// Force = force * distance / vitesse angulaire
-				rb.AddForceAtPosition (- movingForce * rotate / rb.angularVelocity.magnitude, rightCat.transform.position, ForceMode.Force);
-				rb.AddForceAtPosition (movingForce * rotate / rb.angularVelocity.magnitude, leftCat.transform.position, ForceMode.Force);
+				rb.AddForceAtPosition (
+					- movingForce * rotate / rb.angularVelocity.magnitude, 
+					rightCat.transform.position, 
+					ForceMode.Force
+				);
+				rb.AddForceAtPosition (
+					movingForce * rotate / rb.angularVelocity.magnitude, 
+					leftCat.transform.position, 
+					ForceMode.Force
+				);
 			} else {
-				rb.AddForceAtPosition (- movingForce * rotate * 2, rightCat.transform.position, ForceMode.Force);
-				rb.AddForceAtPosition (movingForce * rotate * 2, leftCat.transform.position, ForceMode.Force);
+				rb.AddForceAtPosition (
+					2 * rotate * - movingForce, 
+					rightCat.transform.position, 
+					ForceMode.Force
+				);
+				rb.AddForceAtPosition (
+					2 * rotate * movingForce, 
+					leftCat.transform.position, 
+					ForceMode.Force
+				);
 			}
 		}
 	}

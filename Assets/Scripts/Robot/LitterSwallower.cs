@@ -30,7 +30,6 @@ public class LitterSwallower : MonoBehaviour {
 		/// axe de rotation
 		Vector3 axis = rightCal.transform.position - centerCal.transform.position;
 		transform.RotateAround (transform.position, axis, angle * Time.timeScale);
-		//collid.transform.RotateAround (collid.transform.position, axis, angle * Time.timeScale);
 		collid.transform.RotateAround (collid.transform.position, axis, rb.velocity.magnitude * Time.timeScale);
 	}
 }

@@ -28,7 +28,7 @@ public class LitterController : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
-		if (rb.velocity.magnitude > 20 && tag == "Litter") {
+		if (rb.velocity.magnitude > 20 && CompareTag("Litter")) {
 			tag = "Untagged";
 			script.LitterCount ();
 		}
@@ -38,7 +38,7 @@ public class LitterController : MonoBehaviour {
 			if (dist < 9) {
 				rb.useGravity = true;
 				rb.AddForce((robotPos.position - transform.position) * 3);
-				if (tag == "Litter") {
+				if (CompareTag("Litter")) {
 					tag = "Untagged";
 					script.LitterCount ();
 				}
@@ -46,7 +46,7 @@ public class LitterController : MonoBehaviour {
 				Fly ();
 			}
 		} else {
-			if (tag != "Litter" && rb.velocity.magnitude < 30) {
+			if (!CompareTag("Litter") && rb.velocity.magnitude < 30) {
 				tag = "Litter";
 				script.LitterCount ();
 			}
